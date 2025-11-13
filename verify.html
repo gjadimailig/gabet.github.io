@@ -88,7 +88,7 @@
         <p>
           You're all set. Tap the button below to return to the Gabet iOS app and finish authentication.
         </p>
-        <a class="deep-link" href="gabet://auth-callback">Open Gabet</a>
+        <a class="deep-link" href="gabet://auth-callback">Open App</a>
       </div>
       <div class="state state-error">
         <p class="eyebrow">Link check</p>
@@ -96,7 +96,7 @@
         <p data-error-body>
           The verification link you used is no longer valid. Request a new one from the app to continue.
         </p>
-        <a class="retry-link" href="index.html#contact">Request new link</a>
+        <a class="retry-link" href="gabet://auth-callback">Open App</a>
       </div>
     </div>
     <script>
@@ -112,7 +112,7 @@
         const description = params.get('error_description');
         if (errorCode === 'otp_expired') {
           headline.textContent = 'Link expired';
-          body.textContent = description || 'This verification link has expired. Please request a fresh one from the app.';
+          body.textContent = 'Please request a new verification link in the app.';
         } else {
           headline.textContent = 'Verification issue';
           body.textContent = description || 'We could not verify your registration link. Please request a new one.';
