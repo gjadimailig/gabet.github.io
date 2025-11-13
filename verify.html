@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gabet — Verify your registration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+      }
+      .verify-card {
+        width: min(480px, 100%);
+        background: white;
+        border-radius: 32px;
+        padding: 48px 40px;
+        text-align: center;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+      }
+      .status-icon {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 24px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 1.5rem;
+        color: white;
+      }
+      [data-state='success'] .status-icon {
+        background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
+      }
+      [data-state='error'] .status-icon {
+        background: linear-gradient(135deg, #f97316, var(--accent-gold));
+      }
+      h1 {
+        color: var(--neutral-900);
+        margin-bottom: 12px;
+      }
+      p {
+        color: var(--neutral-500);
+        line-height: 1.6;
+      }
+      .deep-link,
+      .retry-link {
+        margin-top: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px 24px;
+        border-radius: 999px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 12px 32px rgba(37, 99, 235, 0.35);
+      }
+      .deep-link {
+        background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
+      }
+      .retry-link {
+        background: linear-gradient(135deg, #f97316, var(--accent-gold));
+      }
+      .state {
+        display: none;
+      }
+      [data-state='success'] .state-success,
+      [data-state='error'] .state-error {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="verify-card" data-state-container data-state="success">
+      <div class="status-icon">✓</div>
+      <div class="state state-success">
+        <p class="eyebrow">Welcome to Gabet</p>
+        <h1>Registration confirmed</h1>
+        <p>
+          You're all set. Tap the button below to return to the Gabet iOS app and finish authentication.
+        </p>
+        <a class="deep-link" href="gabet://auth-callback">Open Gabet</a>
+      </div>
+      <div class="state state-error">
+        <p class="eyebrow">Link check</p>
+        <h1 data-error-headline>Verification issue</h1>
+        <p data-error-body>
+          The verification link you used is no longer valid. Request a new one from the app to continue.
+        </p>
+        <a class="retry-link" href="index.html#contact">Request new link</a>
+      </div>
+    </div>
+    <script>
+      const container = document.querySelector('[data-state-container]');
+      const headline = document.querySelector('[data-error-headline]');
+      const body = document.querySelector('[data-error-body]');
+      const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
+      const params = new URLSearchParams(hash);
+      if (params.has('error')) {
+        container.dataset.state = 'error';
+        document.querySelector('.status-icon').textContent = '!';
+        const errorCode = params.get('error_code');
+        const description = params.get('error_description');
+        if (errorCode === 'otp_expired') {
+          headline.textContent = 'Link expired';
+          body.textContent = description || 'This verification link has expired. Please request a fresh one from the app.';
+        } else {
+          headline.textContent = 'Verification issue';
+          body.textContent = description || 'We could not verify your registration link. Please request a new one.';
+        }
+      }
+    </script>
+  </body>
+</html>
